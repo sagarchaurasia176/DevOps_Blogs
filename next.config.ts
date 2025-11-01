@@ -5,6 +5,8 @@ const nextConfig = {
   },
 
   images: {
+    unoptimized: true,
+    domains: ['localhost'],
     remotePatterns: [
       {
         protocol: "https",
@@ -13,6 +15,10 @@ const nextConfig = {
       {
         protocol: "https",
         hostname: "www.notion.so",
+      },
+      {
+        protocol: "https",
+        hostname: "plus.unsplash.com",
       },
       {
         protocol: "https",
