@@ -1,9 +1,8 @@
-// pages/api/notion-webhook.js
 // app/api/notion-webhook/route.js
 import axios from "axios";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextRequest) {
+export async function POST(req:NextRequest) {
   const body = await req.json();
 
   // ✅ Handle Notion verification
@@ -12,11 +11,19 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ challenge: body.challenge });
   }
 
-  // ✅ Handle webhook event
-  console.log("🔔 Webhook Event:", body.type);
+  // 🧩 Handle both possible payload shapes
+  const eventType =
+    body.type ||
+    body?.event?.type ||
+    (body?.events?.[0] ? body.events[0].type : undefined);
 
-  if (body.type === "page.created") {
+  console.log("🔔 Webhook Event:", eventType);
+
+  // ✅ Handle webhook event
+  if (eventType === "page.created") {
+    console.log("📝 New Notion Page Created! Triggering deploy...");
     await axios.post(process.env.NOTION_WEB_HOOKS!);
   }
-  return NextResponse.json({ received: true});
+
+  return NextResponse.json({ received: true });
 }
