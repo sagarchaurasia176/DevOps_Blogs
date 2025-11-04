@@ -18,5 +18,5 @@ export async function POST(req: NextRequest) {
   if (body.type === "page.created") {
     await axios.post(process.env.NOTION_WEB_HOOKS!);
   }
-  return NextResponse.json({ received: true, message: body });
+  return NextResponse.json({ received: true});
 }
