@@ -1,28 +1,39 @@
 // pages/api/notion-webhook.js
 import axios from "axios";
-import Error from "next/error";
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from "next/server";
 
-// Webhooks | which directly shared the response to the server !
-export async function POST(req:NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    // 2️⃣ Read Notion webhook payload
-    const event = await req.json();
-    console.log("🔔 Notion Webhook Received:", event.type);
+    // 1️⃣ Handle only POST requests
+    if (req.method !== "POST") {
+      return NextResponse.json({ error: "post not created" }, { status: 500 });
+    }
 
-    // 3️⃣ If a new Notion page (blog) is created
-    if (event.type === "page.created") {
-      console.log("📝 New Notion Page Created! Triggering redeploy...");
+    // 2️⃣ Parse the body
+    const body = await req.json();
 
-      // 4️⃣ Trigger your Vercel redeploy hook
-      // ⚠️ Replace this with your real Vercel deploy hook URL
+    // 3️⃣ Handle Notion's verification challenge
+    if (body?.challenge) {
+      console.log("🧩 Notion verification challenge received");
+      return NextResponse.json({ challenge: body.challenge });
+    }
+
+    // 4️⃣ Handle real webhook events
+    console.log("🔔 Notion Webhook Event:", body.type);
+
+    if (body.type === "page.created") {
+      console.log("📝 New Notion Page Created! Triggering Vercel Deploy...");
+
+      // Replace this URL with your actual Vercel deploy hook
       await axios.post(process.env.NOTION_WEB_HOOKS!);
     }
 
-    // 5️⃣ Respond back to Notion
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("❌ Webhook Error:", Error.name);
-    return NextResponse.json({ error: "Internal Server Error from the notion webhooks" }, { status: 500 });
+    console.error("❌ Webhook Error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
