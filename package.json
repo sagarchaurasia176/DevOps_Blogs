@@ -11,6 +11,7 @@
   "dependencies": {
     "@notionhq/client": "^5.1.0",
     "@types/css-modules": "^1.0.5",
+    "axios": "^1.13.2",
     "cloudinary": "^2.7.0",
     "lucide-react": "^0.548.0",
     "next": "15.5.4",

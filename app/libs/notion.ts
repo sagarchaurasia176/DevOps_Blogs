@@ -2,7 +2,7 @@ import { NotionAPI } from 'notion-client';
 import { Block } from 'notion-types';
 
 const notion = new NotionAPI({
-  authToken:"ntn_S36024052384JX7H2SeJFw5HenFIn3rQKaMbEeN7iXB6Jr"// ✅ must be your integration token
+  authToken:process.env.NOTION_AUTH_TOKEN!// ✅ must be your integration token
 });
 
 
