@@ -4,14 +4,15 @@ import { Post } from "@/app/types/post";
 import { getBlurImage } from "@/app/utils/get-blur-image";
 
 const notion = new Client({
-  auth: "ntn_S36024052384JX7H2SeJFw5HenFIn3rQKaMbEeN7iXB6Jr",
+  auth:process.env.NOTION_AUTH_TOKEN,
 });
+
 
 export async function getAllPostsFromNotion(): Promise<Post[]> {
   try {
     // ✅ Query database
     const response = await notion.dataSources.query({
-      data_source_id: "2890d6b8-5776-8032-9210-000bc651d6b0",
+      data_source_id:"2890d6b8-5776-8032-9210-000bc651d6b0",
       filter: {
         property: "published",
         checkbox: {
