@@ -11,6 +11,7 @@ export async function POST(req: NextRequest) {
 
     // 2️⃣ Parse the body
     const body = await req.json();
+    console.log("📨 Webhook Event Body:", body);
 
     // 3️⃣ Handle Notion's verification challenge
     if (body?.challenge) {
@@ -28,11 +29,11 @@ export async function POST(req: NextRequest) {
       await axios.post(process.env.NOTION_WEB_HOOKS!);
     }
 
-    return NextResponse.json({ received: true });
+    return NextResponse.json({ received: true , message:body });
   } catch (error) {
     console.error("❌ Webhook Error:", error);
     return NextResponse.json(
-      { error: "Internal Server Error" },
+      { error: error },
       { status: 500 }
     );
   }
