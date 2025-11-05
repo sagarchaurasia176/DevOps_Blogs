@@ -8,6 +8,7 @@ export async function POST(req: NextRequest) {
   // 🧩 Safely parse JSON (avoid "Unexpected end of JSON input")
   try {
     body = await req.json();
+    console.log("✅ JSON body received:", body);
   } catch (err) {
     console.warn("⚠️ No or invalid JSON body received");
     return NextResponse.json(
@@ -15,7 +16,7 @@ export async function POST(req: NextRequest) {
       { status: 400 }
     );
   }
-
+  
   // ✅ Handle Notion verification
   if (body?.challenge) {
     console.log("✅ Verification challenge received");
@@ -34,7 +35,10 @@ export async function POST(req: NextRequest) {
   if (eventType === "page.created") {
     console.log("📝 New Notion Page Created! Triggering deploy...");
     try {
-      await axios.post(process.env.NOTION_WEB_HOOKS!);
+      let NOTION_WEB_HOOK = await axios.get(process.env.NOTION_WEB_HOOKS!);
+      if (!NOTION_WEB_HOOK) {
+        throw new Error("❌ Failed to trigger deploy");
+      }
     } catch (err) {
       console.error("❌ Failed to trigger deploy:", err);
     }
